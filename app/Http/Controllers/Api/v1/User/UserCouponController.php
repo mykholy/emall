@@ -21,12 +21,40 @@ class UserCouponController extends Controller
 
         $userId = auth()->user()->id;
 
+
         return UserCoupon::getForShop($userId,$id);
 
     }
 
 
+    public static function verifyCouponById($couponId){
+        $coupon = Coupon::find($couponId);
+        $userId = auth()->user()->id;
+        if($coupon){
+            $isCouponUsed = UserCoupon::where('user_id','=',$userId)->where('coupon_id','=',$couponId)->exists();
+            if($coupon->for_only_one_time && $isCouponUsed){
+                return [
+                    "success"=>false,
+                    "error"=>"This coupon is already used by you"
+                ];
+            }elseif ($coupon->for_new_user && $isCouponUsed){
+                return [
+                    "success"=>false,
+                    "error"=>"This coupon is only for new users"
+                ];
+            }
+            return [
+                "success"=>true
+            ];
+        }else{
+            return [
+                "success"=>false,
+                "error"=>"This coupon is not available"
+            ];
+        }
 
+
+    }
 
 
     public static function verifyCoupon($userId,$couponId){

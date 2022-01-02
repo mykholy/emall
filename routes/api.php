@@ -129,6 +129,8 @@ Route::group(['prefix' => 'v1/user'], function () {
 
         //coupon for shop
         Route::get('/shop_coupon/{id}', 'Api\v1\User\UserCouponController@getForShop');
+        Route::get('/verifyCouponById/{couponId}', 'Api\v1\User\UserCouponController@verifyCouponById');
+
 
         //------------- For Testing Purpose -----------------------//
         Route::get('/test', 'Api\v1\User\TestController@test');
