@@ -23,7 +23,7 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $user_id = $request->user()->id;
-        $orders = Order::with('carts', 'coupon', 'address', 'carts.product', 'carts.product.productImages', 'orderPayment')
+        $orders = Order::with('carts', 'coupon', 'address', 'carts.product', 'carts.product.productImages','carts.product.productGift.gift', 'orderPayment')
             ->where('user_id', '=', $user_id)
             ->orderBy('updated_at', 'DESC')->get();
         return $orders;
@@ -145,7 +145,7 @@ class OrderController extends Controller
             $shopManager = Manager::find(Shop::find($order->shop_id)->manager_id);
             if($shopManager)
                 FCMController::sendMessage("New Order","You have new order from ".$user->name, $shopManager->fcm_token);
-            return Order::with('carts', 'coupon', 'address', 'carts.product', 'carts.product.productImages', 'shop')
+            return Order::with('carts', 'coupon', 'address', 'carts.product', 'carts.product.productImages','carts.product.productGift.gift', 'shop')
                 ->find($order->id);
 
 
@@ -159,7 +159,7 @@ class OrderController extends Controller
     public function show($id)
     {
 
-        return Order::with('carts', 'coupon', 'address', 'carts.product', 'carts.product.productImages', 'shop', 'orderPayment','deliveryBoy')
+        return Order::with('carts', 'coupon', 'address', 'carts.product', 'carts.product.productImages','carts.product.productGift.gift', 'shop', 'orderPayment','deliveryBoy')
             ->find($id);
 
     }
@@ -215,7 +215,8 @@ class OrderController extends Controller
             } else {
                 return response(['errors' => ['Payment Failed please contact EMall']], 403);
             }
-        }else if(isset($request->status)){
+        }
+        else if(isset($request->status)){
             if($request->status==5){
                 $order = Order::find($id);
                 if (!ShopRevenueController::storeRevenue($id)) {

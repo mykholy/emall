@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @property mixed expired_at
  * @property mixed description
+ * @property mixed image_url
  * @property mixed name
  * @property mixed started_at
  * @property mixed user_id
@@ -22,7 +23,7 @@ class Gift extends Model
 
 
     protected $fillable = [
-        'name', 'description', 'is_activate', 'started_at', 'expired_at', 'user_id'
+        'name', 'description','image_url', 'is_activate', 'started_at', 'expired_at', 'user_id'
     ];
 
     public function products(): HasMany

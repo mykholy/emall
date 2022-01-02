@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -22,47 +23,65 @@ class Product extends Model
 {
 
 
-
-    public function shop(){
+    public function shop()
+    {
         return $this->belongsTo(Shop::class);
     }
 
-    public function category(){
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 
-    public function productImages(){
+    public function productImages()
+    {
         return $this->hasMany(ProductImage::class);
     }
 
-    public function users(){
-        return $this->belongsToMany(User::class,'favourites','product_id','user_id')->withTimestamps();
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'favourites', 'product_id', 'user_id')->withTimestamps();
     }
 
-    public function favorites(){
+    public function favorites()
+    {
         return $this->hasMany(Favorite::class);
     }
 
-   public function carts(){
+    public function carts()
+    {
         return $this->hasMany(Cart::class);
     }
 
-    public function productReviews(){
+    public function productReviews()
+    {
         return $this->hasMany(ProductReview::class);
     }
 
-    public function productItems(){
+    public function productItems()
+    {
         return $this->hasMany(ProductItem::class);
     }
 
-    public function subCategory(){
+    public function productGift()
+    {
+        return $this->hasMany(GiftProduct::class, 'product_id')
+            ->with('gift')
+            ->whereHas('gift', function ($q)  {
+                $q->where('is_active', 1);
+            });
+    }
+
+    public function subCategory()
+    {
         return $this->belongsTo(SubCategory::class);
 
     }
 
 
-    public static function getDiscountedPrice($price,$discount){
-        return $price*(100-$discount)/100;
+    public static function getDiscountedPrice($price, $discount)
+    {
+        return $price * (100 - $discount) / 100;
     }
 
     public static function getPlaceholderImage(): string

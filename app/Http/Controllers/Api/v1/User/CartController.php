@@ -15,7 +15,7 @@ class CartController extends Controller
     public function index(Request $request)
     {
         $user_id = $request->user()->id;
-        $carts = Cart::with('product', 'product.shop', 'product.category', 'product.productImages', 'product.shop.manager','productItem','productItem.productItemFeatures')->where('user_id', '=', $user_id)
+        $carts = Cart::with('product', 'product.shop', 'product.category', 'product.productImages', 'product.productGift.gift', 'product.shop.manager', 'productItem', 'productItem.productItemFeatures')->where('user_id', '=', $user_id)
             ->where('active', '=', true)->get();
         return $carts;
     }
@@ -30,7 +30,7 @@ class CartController extends Controller
     {
         $this->validate($request, [
             'product_id' => 'required',
-            'product_item_id'=>'required',
+            'product_item_id' => 'required',
             'quantity' => 'required'
         ]);
 
@@ -43,12 +43,12 @@ class CartController extends Controller
             ->where('active', '=', true)
             ->exists();
         if (!$cart) {
-            if($request->quantity > $productItem->quantity){
+            if ($request->quantity > $productItem->quantity) {
                 return response(['errors' => ['Quantity is not enough']], 403);
             }
 
-            if(!$product->active){
-                return response(['errors' => ['This product is not currently active'    ]], 403);
+            if (!$product->active) {
+                return response(['errors' => ['This product is not currently active']], 403);
             }
 
             $cart = new Cart();
@@ -82,13 +82,13 @@ class CartController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request,[
-            'quantity'=>'required'
+        $this->validate($request, [
+            'quantity' => 'required'
         ]);
 
         $cart = Cart::with('productItem')->find($id);
         if ($cart) {
-            if($request->quantity > $cart->productItem->quantity){
+            if ($request->quantity > $cart->productItem->quantity) {
                 return response(['errors' => ['Quantity is not enough']], 403);
             }
             $cart->quantity = $request->quantity;
@@ -96,19 +96,21 @@ class CartController extends Controller
                 return response(['message' => 'Quantity changed'], 200);
             }
         }
-        return response(['errors' => ['Something wrong']], 403);
+        return response(['errors' => ['Cart id not found']], 404);
     }
 
 
     public function destroy($id)
     {
         $cart = Cart::find($id);
-        if($cart->delete()){
-            return response(['message' => 'Cart is deleted'], 200);
-        }else{
-            return response(['errors' => ['Something wrong']], 403);
-        }
-
+        if ($cart) {
+            if ($cart->delete()) {
+                return response(['message' => 'Cart is deleted'], 200);
+            } else {
+                return response(['errors' => ['Something wrong']], 403);
+            }
+        } else
+            return response(['errors' => ['Cart not found']], 403);
     }
 
 }

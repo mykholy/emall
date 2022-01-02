@@ -26,7 +26,7 @@ class HomeController extends Controller
                 array_push($shops,$shop);
             }
         }
-        
+
         $banners =  Banner::all();
         $categories = Category::with('subCategories')->get();
 
@@ -51,7 +51,7 @@ class HomeController extends Controller
     public function show($id)
     {
         $userId = auth()->user()->id;
-        $shop =  Shop::with('products','manager','products.productImages')->find($id)->toArray();
+        $shop =  Shop::with('products','manager','products.productImages','productGift','productGift.gift')->find($id)->toArray();
         $products = $shop['products'];
         $newProducts = [];
         foreach ($products as $product){

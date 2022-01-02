@@ -21,7 +21,7 @@ class ProductController extends Controller
             $subCategories = explode(',',$sub_category_ids);
         else
             $subCategories = null;
-        $products = Product::with('productImages','productItems','productItems.productItemFeatures')->where('active','=',true)->get()->toArray();
+        $products = Product::with('productGift','productGift.gift','productImages','productItems','productItems.productItemFeatures')->where('active','=',true)->get()->toArray();
         $filterProduct = [];
         foreach ($products as $product){
             if(Favorite::where('user_id','=',$user_id)->where('product_id','=',$product['id'])->exists()){
@@ -61,7 +61,7 @@ class ProductController extends Controller
     public function show(Request $request,$id)
     {
         $user_id = $request->user()->id;
-        $product = Product::with('category','productImages','shop','shop.manager','productReviews','productItems','productItems.productItemFeatures')->find($id);
+        $product = Product::with('productGift','productGift.gift','category','productImages','shop','shop.manager','productReviews','productItems','productItems.productItemFeatures')->find($id);
         if(Favorite::where('user_id','=',$user_id)->where('product_id','=',$product['id'])->exists()){
             $product['is_favorite'] = true;
         }else{
@@ -92,7 +92,7 @@ class ProductController extends Controller
     }
 
     public function showReviews($productId){
-        return Product::with('productReviews','productReviews.user')->find($productId);
+        return Product::with('productGift','productGift.gift','productReviews','productReviews.user')->find($productId);
     }
 
 }

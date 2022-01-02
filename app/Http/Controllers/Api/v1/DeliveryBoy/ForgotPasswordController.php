@@ -15,7 +15,7 @@ class ForgotPasswordController extends Controller
     public function sendResetLinkEmail(Request $request)
     {
 
-        return response(['errors' => ['This is demo version' ]], 403);
+//        return response(['errors' => ['This is demo version' ]], 403);
 
         $request->validate([
             'email'=>'required|email'

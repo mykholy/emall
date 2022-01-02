@@ -49,6 +49,7 @@
                                 <thead class="thead-light">
 
                                 <tr>
+                                    <th>{{__('admin.image')}}</th>
                                     <th>{{__('admin.name')}}</th>
                                     <th>{{__('admin.description')}}</th>
                                     <th>{{__('admin.started_at')}}</th>
@@ -60,6 +61,13 @@
                                 <tbody>
                                 @foreach($gifts as $gift)
                                     <tr>
+                                        <td>
+                                            <div>
+                                                <img src="{{asset('storage/'.$gift->image_url)}}" style="object-fit: cover" alt="OOps"
+                                                     height="40px"
+                                                     width="40px">
+                                            </div>
+                                        </td>
                                         <td><span class="font-weight-bold">{{$gift->name}}</span></td>
                                         <td>{{$gift->description}}</td>
 

@@ -41,31 +41,38 @@ class GiftController extends Controller
                 'started_at' => 'required|date',
                 'expired_at' => 'required|date|after:started_at',
                 'product_ids' => 'required|array|min:1',
+                'image' => 'required'
             ],
             [
                 'name.required' => 'Please provide gift name',
                 'description.required' => 'Please provide gift description',
                 'expired_at.after' => 'The expired at must be a date after started_at',
                 'product_ids.required' => 'Please select products',
+                'image.required' => 'Please provide a image'
 
 
             ]
         );
 
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('gifts', 'public');
+            $gift = new Gift();
+            $gift->name = $request->get('name');
+            $gift->description = $request->get('description');
+            $gift->started_at = $request->get('started_at');
+            $gift->expired_at = $request->get('expired_at');
+            $gift->image_url = $path;
 
-        $gift = new Gift();
-        $gift->name = $request->get('name');
-        $gift->description = $request->get('description');
-        $gift->started_at = $request->get('started_at');
-        $gift->expired_at = $request->get('expired_at');
 
-
-        if ($gift->save()) {
-            $this->giftProductsInsertMany($request->product_ids, $gift);
-            return redirect(route('admin.gifts.index'))->with('message', 'Gift added');
-        } else {
-            return redirect(route('admin.gifts.index'))->with('error', 'Gift was not added');
+            if ($gift->save()) {
+                $this->giftProductsInsertMany($request->product_ids, $gift);
+                return redirect(route('admin.gifts.index'))->with('message', 'Gift added');
+            } else {
+                return redirect(route('admin.gifts.index'))->with('error', 'Gift was not added');
+            }
         }
+        return redirect()->route('admin.gifts.index')->with('error', 'Something wrong');
+
     }
 
     public function show($id)
@@ -145,6 +152,11 @@ class GiftController extends Controller
         $gift->description = $request->get('description');
         $gift->started_at = $request->get('started_at');
         $gift->expired_at = $request->get('expired_at');
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('gifts', 'public');
+            $gift->image_url = $path;
+        }
 
         if (isset($request->is_active)) {
             $gift->is_active = true;

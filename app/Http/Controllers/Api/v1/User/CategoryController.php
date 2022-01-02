@@ -46,7 +46,7 @@ class CategoryController extends Controller
     public function getProducts($id): array
     {
         $user_id = auth()->user()->id;
-        $products = Product::with('productImages','productItems','productItems.productItemFeatures')->where('active','=',true)->where('category_id',$id)->get();
+        $products = Product::with('productGift.gift','productImages','productItems','productItems.productItemFeatures')->where('active','=',true)->where('category_id',$id)->get();
         $filterProduct = [];
         foreach ($products as $product){
             if(Favorite::where('user_id','=',$user_id)->where('product_id','=',$product['id'])->exists()){

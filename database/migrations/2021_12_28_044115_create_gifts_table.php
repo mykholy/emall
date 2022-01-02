@@ -17,6 +17,7 @@ class CreateGiftsTable extends Migration
             $table->id();
             $table->string('name');
             $table->longText('description');
+            $table->string('image_url')->nullable();
             $table->boolean('is_active')->default(true);
             $table->dateTime('started_at')->default(now());
             $table->dateTime('expired_at');

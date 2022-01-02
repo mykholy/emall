@@ -1,6 +1,8 @@
 @extends('admin.layouts.app', ['title' => 'Edit Gift'])
 
 @section('css')
+    <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css"/>
 @endsection
 
 @section('content')
@@ -27,7 +29,7 @@
             <div class="col-6">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{route('admin.gifts.update',['id'=>$gift->id])}}" method="post">
+                        <form action="{{route('admin.gifts.update',['id'=>$gift->id])}}" method="post" enctype="multipart/form-data">
                             @csrf
                             {{method_field('PATCH')}}
                             {{--<input type="hidden" name="id" value="{{$category->id}}">--}}
@@ -102,6 +104,12 @@
                                 @endif
                             </div>
 
+                            <div class="form-group">
+                                <label for="image">{{__('admin.image')}}</label>
+                                <input type="file" name="image" id="image" data-plugins="dropify"
+                                       data-default-file="{{asset('storage/'.$gift->image_url)}}"/>
+                                <p class="text-muted text-center mt-2 mb-0">{{__('admin.upload_image')}}</p>
+                            </div>
 
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" class="custom-control-input" name="is_active" id="is_active"

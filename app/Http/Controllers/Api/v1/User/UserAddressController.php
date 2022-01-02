@@ -13,7 +13,7 @@ class UserAddressController extends Controller
     public function index(Request $request)
     {
         $user_id = $request->user()->id;
-        return UserAddress::where('user_id',$user_id)->where('active',true)->get();
+        return UserAddress::where('user_id', $user_id)->where('active', true)->get();
     }
 
     public function create()
@@ -25,13 +25,13 @@ class UserAddressController extends Controller
     public function store(Request $request)
     {
         $user_id = $request->user()->id;
-        $this->validate($request,[
-           'longitude'=>'required',
-           'latitude'=>'required',
-           'address'=>'required',
-           'city'=>'required',
-           'pincode'=>'required',
-            'type'=>'required'
+        $this->validate($request, [
+            'longitude' => 'required',
+            'latitude' => 'required',
+            'address' => 'required',
+            'city' => 'required',
+            'pincode' => 'required',
+            'type' => 'required'
         ]);
 
         $address = new UserAddress();
@@ -43,7 +43,7 @@ class UserAddressController extends Controller
         $address->pincode = $request->pincode;
         $address->user_id = $user_id;
         $address->type = $request->type;
-        if(isset($request->type)){
+        if (isset($request->type)) {
             $address->type = $request->type;
         }
 
@@ -64,75 +64,80 @@ class UserAddressController extends Controller
     }
 
 
-    public function update(Request $request,$address_id)
+    public function update(Request $request, $address_id)
     {
         $userAddress = UserAddress::find($address_id);
 
-        if(isset($request->default)){
-            if($request->default){
+        if (isset($request->default)) {
+            if ($request->default) {
                 UserAddress::setAllDefaultOff($userAddress->user_id);
             }
             $userAddress->default = $request->default;
 
-            if($userAddress->save()){
-                return response(['message'=>['Your address has been changed']]);
-            }else{
-                return response(['errors'=>['There is something wrong']],402);
+            if ($userAddress->save()) {
+                return response(['message' => ['Your address has been changed']]);
+            } else {
+                return response(['errors' => ['There is something wrong']], 402);
             }
         }
 
 
-        if(isset($request->longitude) ||
+        if (isset($request->longitude) ||
             isset($request->latitude) ||
             isset($request->address) ||
             isset($request->address2) ||
             isset($request->city) ||
-            isset($request->pincode)){
+            isset($request->pincode)) {
 
             $newUserAddress = new UserAddress();
-            $newUserAddress->longitude = $request->longitude??$userAddress->longitude;
-            $newUserAddress->latitude = $request->latitude??$userAddress->latitude;
-            $newUserAddress->address = $request->address??$userAddress->address;
-            $newUserAddress->address2 = $request->address2??$userAddress->address2;
-            $newUserAddress->city = $request->city??$userAddress->city;
-            $newUserAddress->pincode = $request->pincode??$userAddress->pincode;
-            $newUserAddress->type = $request->type??$userAddress->type;
+            $newUserAddress->longitude = $request->longitude ?? $userAddress->longitude;
+            $newUserAddress->latitude = $request->latitude ?? $userAddress->latitude;
+            $newUserAddress->address = $request->address ?? $userAddress->address;
+            $newUserAddress->address2 = $request->address2 ?? $userAddress->address2;
+            $newUserAddress->city = $request->city ?? $userAddress->city;
+            $newUserAddress->pincode = $request->pincode ?? $userAddress->pincode;
+            $newUserAddress->type = $request->type ?? $userAddress->type;
             $newUserAddress->user_id = 1;
 
 
             $userAddress->active = false;
 
-            if($userAddress->save() && $newUserAddress->save()){
-                return response(['message'=>['Your address has been changed']]);
-            }else{
-                return response(['errors'=>['There is something wrong']],402);
+            if ($userAddress->save() && $newUserAddress->save()) {
+                return response(['message' => ['Your address has been changed']]);
+            } else {
+                return response(['errors' => ['There is something wrong']], 402);
             }
 
 
         }
 
-        if(isset($request->type)){
+        if (isset($request->type)) {
             $userAddress->type = $request->type;
-            if($userAddress->save()){
-                return response(['message'=>['Your address has been changed']]);
-            }else{
-                return response(['errors'=>['There is something wrong']],402);
+            if ($userAddress->save()) {
+                return response(['message' => ['Your address has been changed']]);
+            } else {
+                return response(['errors' => ['There is something wrong']], 402);
             }
         }
 
 
-        return response(['message'=>['Your address has been changed']],402);
+        return response(['message' => ['Your address has been changed']], 402);
     }
 
 
-    public function destroy($id){
+    public function destroy($id)
+    {
 
         $userAddress = UserAddress::find($id);
-        if($userAddress->delete()){
-            return response(['message' => 'Address is deleted'], 200);
-        }else{
-            return response(['errors' => ['Something wrong']], 403);
+        if ($userAddress) {
+            if ($userAddress->delete()) {
+                return response(['message' => 'Address is deleted'], 200);
+            } else {
+                return response(['errors' => ['Something wrong']], 403);
+            }
         }
+        return response(['errors' => ['Address not found']], 404);
+
 
 
     }

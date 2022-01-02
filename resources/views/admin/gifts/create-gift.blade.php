@@ -1,6 +1,8 @@
 @extends('admin.layouts.app', ['title' => 'New Gift'])
 
 @section('css')
+    <link href="{{asset('assets/libs/dropzone/dropzone.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{asset('assets/libs/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css"/>
 @endsection
 
 @section('content')
@@ -27,7 +29,7 @@
             <div class="col-6">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{route('admin.gifts.store')}}" method="post">
+                        <form action="{{route('admin.gifts.store')}}" method="post" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group">
                                 <label for="name">{{__('admin.name')}} <span class="text-danger">*</span></label>
@@ -94,6 +96,13 @@
                                 @endif
                             </div>
 
+                            <div class="form-group">
+                                <label for="image">{{__('admin.image')}}</label>
+                                <input type="file" name="image" id="image" data-plugins="dropify"
+                                       data-default-file=""/>
+                                <p class="text-muted text-center mt-2 mb-0">{{__('admin.upload_image')}}</p>
+                            </div>
+
                             <div class="text-right">
                                 <button type="submit"
                                         class="btn btn-success waves-effect waves-light">{{__('admin.save')}}</button>
@@ -112,6 +121,9 @@
 @endsection
 
 @section('script')
+    <script src="{{asset('assets/libs/dropzone/dropzone.min.js')}}"></script>
+    <script src="{{asset('assets/libs/dropify/dropify.min.js')}}"></script>
+    <script src="{{asset('assets/js/pages/form-fileuploads.init.js')}}"></script>
     <script>
 
         $(document).ready(function () {

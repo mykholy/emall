@@ -11,7 +11,7 @@ class FavoriteController extends Controller
     public function index()
     {
         $user_id = auth()->user()->id;
-        return Favorite::with('product','product.productImages','product.shop','product.productItems','product.productItems.productItemFeatures')
+        return Favorite::with('product','product.productImages','product.shop','product.productGift.gift','product.productItems','product.productItems.productItemFeatures')
             ->where('user_id','=',$user_id)->get();
     }
 
@@ -65,6 +65,7 @@ class FavoriteController extends Controller
 
 
     public function destroy(Request $request){
+
     }
 
 
